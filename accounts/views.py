@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages, auth #to import the messages from seettings.py and use it as made in the partial _alerts.html
 from django.contrib.auth.models import User
+from contacts.models import Contact
 # Create your views here.
 
 def register (request):
@@ -74,4 +75,7 @@ def logout (request):
 
 
 def dashboard (request):
-    return render (request, 'accounts/dashboard.html')
+    user_contacts = Contact.objects.order_by('-contact_date').filter(user_id=request.user.id) #the objects are filtered as the following: any user Id has the logged in user id
+    
+    context = { 'contacts':user_contacts }
+    return render (request, 'accounts/dashboard.html', context)
