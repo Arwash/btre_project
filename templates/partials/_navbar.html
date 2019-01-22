@@ -19,7 +19,7 @@
                 <a class="nav-link" href="{% url 'index' %}">Home</a>
               </li>
               <li 
-              {% if 'about' in request.path %}
+              {% if 'about' in request.path %} 
               class="nav-item active mr-3"
               {% else %}
               class="nav-item mr-3"
@@ -39,16 +39,51 @@
             </ul>
     
             <ul class="navbar-nav ml-auto">
-              <li class="nav-item mr-3">
-                <a class="nav-link" href="register.html">
-                  <i class="fas fa-user-plus"></i> Register</a>
-              </li>
-              <li class="nav-item mr-3">
-                <a class="nav-link" href="login.html">
-                  <i class="fas fa-sign-in-alt"></i>
-    
-                  Login</a>
-              </li>
+              {% if user.is_authenticated %} <!--This conditional is to check if the user is logged in, if yes the nav
+              bar will change as the below code-->
+                  <li
+                  {% if 'dashboard' in request.path %}
+                  class="nav-item active mr-3"
+                  {% else %}
+                  class="nav-item mr-3"
+                  {% endif %}>
+                    <a class="nav-link" href="{% url 'dashboard' %}"> Welcome {{ user.username }} (Dashboard)</a>
+                  </li>
+                  <!--The below JS look for the ID of logout form below and will submit the form. We do this becasue we
+                  need to submit a form even for the logout becasue we need a POST method. The form will be hidden-->
+                  <li class="nav-item mr-3">
+                    <a href="javascript:{document.getElementById('logout').submit()}" class="nav-link">
+                      <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                      <!--Here is the logout form. It will do Post request and logout-->
+                      <form action="{% url 'logout' %}"  method="POST" id="logout">
+                        {% csrf_token %}
+                        <input type="hidden">
+                      </form>
+                  </li>
+
+              {% else %}
+                  <li
+                  {% if 'register' in request.path %}
+                  class="nav-item active mr-3"
+                  {% else %}
+                  class="nav-item mr-3"
+                  {% endif %}>
+                    <a class="nav-link" href="{% url 'register' %}">
+                      <i class="fas fa-user-plus"></i> Register</a>
+                  </li>
+                  <li
+                  {% if 'login' in request.path %}
+                  class="nav-item active mr-3"
+                  {% else %}
+                  class="nav-item mr-3"
+                  {% endif %}
+                  >
+                    <a class="nav-link" href="{% url 'login' %}">
+                      <i class="fas fa-sign-in-alt"></i>
+                      Login</a>
+                  </li>
+              {% endif %}
             </ul>
           </div>
         </div>
